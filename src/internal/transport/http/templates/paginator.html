@@ -1,0 +1,67 @@
+{{ define "pagination" }}
+<div class="flex justify-center gap-2">
+
+    {{ $page := .Paginator.Page }}
+    {{ $total := .Paginator.TotalPages }}
+
+    {{/* Prev */}}
+    {{ if gt $page 1 }}
+        <a href="?page={{ sub $page 1 }}{{ range $k, $v := .Params }}{{ if and (ne $k "page") (ne $v "") }}&{{ $k }}={{ $v | urlquery }}{{ end }}{{ end }}"
+           class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+            Prev
+        </a>
+    {{ end }}
+
+    {{/* Первая */}}
+    {{ if eq $page 1 }}
+        <span class="px-3 py-1 bg-blue-500 text-white rounded">1</span>
+    {{ else }}
+        <a href="?page=1{{ range $k, $v := .Params }}{{ if and (ne $k "page") (ne $v "") }}&{{ $k }}={{ $v | urlquery }}{{ end }}{{ end }}"
+           class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+            1
+        </a>
+    {{ end }}
+
+    {{ if gt $page 3 }}
+        <span class="px-3 py-1">…</span>
+    {{ end }}
+
+    {{ $start := max 2 (sub $page 2) }}
+    {{ $end := min (sub $total 1) (add $page 2) }}
+
+    {{ range $i := seq $start $end }}
+        {{ if eq $i $page }}
+            <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $i }}</span>
+        {{ else }}
+            <a href="?page={{ $i }}{{ range $k, $v := $.Params }}{{ if and (ne $k "page") (ne $v "") }}&{{ $k }}={{ $v | urlquery }}{{ end }}{{ end }}"
+               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+                {{ $i }}
+            </a>
+        {{ end }}
+    {{ end }}
+
+    {{ if lt $page (sub $total 2) }}
+        <span class="px-3 py-1">…</span>
+    {{ end }}
+
+    {{ if gt $total 1 }}
+        {{ if eq $page $total }}
+            <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $total }}</span>
+        {{ else }}
+            <a href="?page={{ $total }}{{ range $k, $v := .Params }}{{ if and (ne $k "page") (ne $v "") }}&{{ $k }}={{ $v | urlquery }}{{ end }}{{ end }}"
+               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+                {{ $total }}
+            </a>
+        {{ end }}
+    {{ end }}
+
+    {{/* Next */}}
+    {{ if lt $page $total }}
+        <a href="?page={{ add $page 1 }}{{ range $k, $v := .Params }}{{ if and (ne $k "page") (ne $v "") }}&{{ $k }}={{ $v | urlquery }}{{ end }}{{ end }}"
+           class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+            Next
+        </a>
+    {{ end }}
+
+</div>
+{{ end }}

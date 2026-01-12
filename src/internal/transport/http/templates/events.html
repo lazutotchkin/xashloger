@@ -1,0 +1,268 @@
+{{ define "pageTitle" }}Events{{ end }}
+
+{{ define "pageBody" }}
+<h2 class="text-2xl font-bold mb-4">Events
+     <span class="text-xs text-gray-500 font-normal">{{ .Total }}</span>
+</h2>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+
+    <div class="filters-wrapper flex flex-col sm:flex-row gap-2 mb-4 px-2 py-1 justify-center items-center">
+
+        <!-- Player -->
+        <div class="filter-input-wrapper">
+            <input type="text"
+            name="player"
+            value="{{ .Params.player }}"
+            placeholder="Player name"
+            class="filter-input"
+            data-filter
+            >
+            <span class="filter-line"></span>
+        </div>
+
+        <!-- Type -->
+        <div class="filter-input-wrapper">
+            <select name="type" class="filter-input" data-filter>
+            <option value="">All types</option>
+            {{ range .EventTypes }}
+                <option value="{{ . }}" {{ if eq $.Params.type . }}selected{{ end }}>
+                {{ . }}
+                </option>
+            {{ end }}
+            </select>
+            <span class="filter-line"></span>
+        </div>
+
+        <!-- Server -->
+        <div class="filter-input-wrapper">
+            <select name="server" class="filter-input" data-filter>
+            <option value="">All servers</option>
+            {{ range .Servers }}
+                <option value="{{ . }}" {{ if eq $.Params.server . }}selected{{ end }}>
+                {{ . }}
+                </option>
+            {{ end }}
+            </select>
+            <span class="filter-line"></span>
+        </div>
+
+        <!-- From
+        <div class="filter-input-wrapper">
+            <input type="datetime-local"
+            name="from"
+            value="{{ .Params.from }}"
+            class="filter-input"
+            data-filter
+            >
+            <span class="filter-line"></span>
+        </div>
+
+         To
+        <div class="filter-input-wrapper">
+            <input type="datetime-local"
+            name="to"
+            value="{{ .Params.to }}"
+            class="filter-input"
+            data-filter
+            >
+            <span class="filter-line"></span>
+        </div> -->
+
+    </div>
+
+
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+        <tr>
+            <th class="px-2 py-2 text-left">#</th>
+            <th class="px-2 py-2 text-left">
+                Time
+                <span class="text-gray-400 header-hint" title="UTC time zone">?</span>
+            </th>
+            <th class="px-2 py-2 text-left">Type</th>
+            <th class="px-2 py-2 text-left">
+                Player
+            </th>
+            <th class="px-2 py-2 text-left">PlayerID</th>
+            <th class="px-2 py-2 text-left">SteamID</th>
+            <th class="px-2 py-2 text-left">Team</th>
+            <th class="px-2 py-2 text-left">
+                Target
+            </th>
+            <th class="px-2 py-2 text-left">Weapon</th>
+            <th class="px-2 py-2 text-left">
+                Message
+            </th>
+            <th class="px-2 py-2 text-left">ServerIP</th>
+            <th class="px-2 py-2 text-left">SourceIP</th>
+            <th class="px-2 py-2 text-left">
+                TTL
+                <span class="text-gray-400 header-hint" title="UTC time zone">?</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ range $i, $e := .Data }}
+            <tr class="border-t">
+                <td class="px-2 py-2 text-left">{{ add (mul (sub $.Page 1) $.PageSize) (add $i 1) }}</td>
+                <td class="px-2 py-2 text-left">{{ printf "%.19s" $e.Timestamp }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Type }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Player }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.PlayerID }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.SteamID }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Team }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Target }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Weapon }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.Message }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.ServerIP }}</td>
+                <td class="px-2 py-2 text-left">{{ $e.SourceIP }}</td>
+                <td class="px-2 py-2 text-left">{{ printf "%.19s" $e.TTL }}</td>
+            </tr>
+        {{ else }}
+            <tr>
+                <td colspan="12" class="text-center py-6 text-gray-500">
+                    No events
+                </td>
+            </tr>
+        {{ end }}
+        </tbody>
+    </table>
+</div>
+
+{{ if gt .TotalPages 1 }}
+    <div class="pt-4">
+        {{ template "pagination" . }}
+    </div>
+{{ end }}
+
+<style>
+
+
+.header-hint {
+    font-size: 12px;
+    color: #6b7280;
+    margin-left: 4px;
+}
+</style>
+
+<style>
+.search-input-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  border-bottom: 1px solid #828282c7;
+  outline: none;
+  background: transparent;
+}
+
+.header-hint {
+    font-size: 12px;
+    color: #6b7280;
+    margin-left: 4px;
+}
+
+.filters-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.filter-input {
+  width: 100%;
+  height: 38px;              /* 🔴 КЛЮЧЕВО */
+  padding: 0 12px;
+  border: none;
+  border-bottom: 1px solid #828282c7;
+  outline: none;
+  background: transparent;
+  line-height: 38px;
+  box-sizing: border-box;
+}
+
+.filter-input select,
+select.filter-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  line-height: normal;
+}
+.filter-line {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: #3b82f6;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.filter-input-wrapper.loading .filter-line {
+  transform: scaleX(1);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #3b82f6 50%,
+    transparent 100%
+  );
+  animation: filter-loading 1.2s infinite linear;
+}
+
+@keyframes filter-loading {
+  from { background-position: -100% 0; }
+  to { background-position: 200% 0; }
+}
+
+</style>
+
+<script>
+let filterTimer = null;
+
+function applyFilters() {
+  clearTimeout(filterTimer);
+
+  filterTimer = setTimeout(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    document.querySelectorAll('[data-filter]').forEach(el => {
+      const name = el.name;
+      const value = el.value.trim();
+
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+    });
+
+    // сбрасываем страницу при любом фильтре
+    params.set('page', '1');
+
+    window.location.search = params.toString();
+  }, 600);
+}
+
+// listeners
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-filter]').forEach(el => {
+    el.addEventListener('input', applyFilters);
+    el.addEventListener('change', applyFilters);
+  });
+});
+</script>
+
+{{ end }}

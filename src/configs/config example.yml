@@ -1,0 +1,45 @@
+server:
+  addr: "127.0.0.1"
+  port: 27016
+web-server:
+  addr: "127.0.0.1"
+  port: 8082
+  ip-firewall:
+    enabled: true
+    allow:
+      - 127.0.0.1
+flags:
+  production: false
+logs:
+  retain-days: 7
+  log-dir: "logs"
+  color: false
+database:
+  dir: "data"
+  file: "hlds.db"
+  path: "data/hlds.db"
+  event-ttl: 30
+rcon:
+  password: "super_strong_password"
+mail:
+  smtp-host: "hmail.cocobri.ru"
+  smtp-port: "25"
+  from: "noreply@cocobri.ru"
+  to:
+    - "example@gmail.com"
+tracking-servers:
+  - name: "Stalkyard"
+    addr: "127.0.0.1"
+    port: 27015
+    rcon-password: "super_strong_password"
+    enabled: true
+  - name: "Crossfire"
+    addr: "127.0.0.1"
+    port: 27016
+    rcon-password: "super_strong_password"
+    enabled: true
+  - name: "Bounce"
+    addr: "127.0.0.1"
+    port: 27017
+    rcon-password: "super_strong_password"
+    enabled: true

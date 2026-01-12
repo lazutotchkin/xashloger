@@ -1,0 +1,7 @@
+src/logs
+src/vendor
+src/.env
+src/data
+src/configs/config.yml
+test_progs
+public
