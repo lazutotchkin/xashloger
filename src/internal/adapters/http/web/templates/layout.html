@@ -1,0 +1,56 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ template "pageTitle" . }}</title>
+    <link rel="stylesheet" href="/static/tailwind.css">
+    {{ if eq .Title "Players" }}
+         <!-- Yandex.Metrika counter --> <script type="text/javascript">     
+         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)     })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=27734607', 'ym');      ym(27734607, 'init', {ssr:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true}); </script> <noscript><div><img src="https://mc.yandex.ru/watch/27734607" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->   
+
+    {{ end }}
+</head>
+<body class="bg-gray-100">
+
+<header class="bg-gray-800 text-white p-4 shadow">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-4 mr-auto">
+            <h1 class="text-xl font-bold">XashLoggerPsycho</h1>
+
+            
+        </div>
+        <nav class="flex items-center">
+            {{ if eq .Title "Admin" }}
+            <div class="flex items-center gap-2 mr-4">
+                <span class="text-sm text-gray-300">Auto update (5s)</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="autoRefresh" class="sr-only peer" checked>
+                <div class="w-12 h-6 bg-gray-400 rounded-full peer-checked:bg-green-500 transition"></div>
+                <span class="absolute left-0 top-0 w-6 h-6 bg-white border rounded-full transform peer-checked:translate-x-6 transition"></span>
+                </label>
+            </div>
+            {{ end }}
+            <a href="/players"
+               class="px-3 py-1 mx-1 rounded {{ if eq .Title "Players" }}bg-blue-700{{ else }}bg-blue-500{{ end }}">
+                Players
+            </a>
+            <a href="/events"
+               class="px-3 py-1 mx-1 rounded {{ if eq .Title "Events" }}bg-green-700{{ else }}bg-green-500{{ end }}">
+                Events
+            </a>
+            <a href="/admin"
+               class="px-3 py-1 mx-1 rounded {{ if eq .Title "Admin" }}bg-green-700{{ else }}bg-green-500{{ end }}">
+                Admin
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main class="container-xl mx-auto mt-4 p-2">
+    {{ template "pageBody" . }}
+</main>
+
+</body>
+</html>
+{{ end }}

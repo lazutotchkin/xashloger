@@ -1,0 +1,221 @@
+{{ define "pageTitle" }}Players{{ end }} {{ define "pageBody" }}
+
+<h2 class="text-2xl font-bold mb-4">
+    Players
+    <span id="playersTotal" class="text-xs text-gray-500 font-normal">
+        {{ .Total }}
+    </span>
+</h2>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+    <div class="filters-wrapper flex flex-row gap-2 mb-4">
+        <!-- Search = 75% -->
+        <div class="filter-input-wrapper relative flex-[3]">
+            <input
+                type="text"
+                id="playerSearch"
+                name="search"
+                value="{{ .Params.search }}"
+                placeholder="Search players..."
+                class="filter-input w-full px-2 py-2"
+                autofocus
+                onkeyup="searchPlayer()"
+            />
+            <span class="filter-line"></span>
+        </div>
+
+        <!-- Select = 25% -->
+        <div class="filter-input-wrapper relative flex-[1]">
+            <select id="dateFilter" class="filter-input filter-select w-full">
+                <option value="all" {{ if eq .Params.date "all" }}selected{{ end }}>All time</option>
+                <option value="today" {{ if eq .Params.date "today" }}selected{{ end }}>Today</option>
+                <option value="yesterday" {{ if eq .Params.date "yesterday" }}selected{{ end }}>Yesterday</option>
+                <option value="last_7days" {{ if eq .Params.date "last_7days" }}selected{{ end }}>Last 7 days</option>
+            </select>
+            <span class="filter-line"></span>
+        </div>
+    </div>
+    
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-2 py-2 text-left">#</th>
+                <th class="px-2 py-2 text-left">Name</th>
+                <th class="px-2 py-2 text-left">Frags</th>
+                <th class="px-2 py-2 text-left">Deaths</th>
+                <th class="px-2 py-2 text-left">KD</th>
+            </tr>
+        </thead>
+        <tbody id="playersTableBody">
+            {{ range $i, $p := .Data }}
+            <!-- {{ $rank := add (mul (sub $.Page 1) $.PageSize) (add $i 1) }} -->
+            <tr class="border-t">
+                <td class="px-2 py-2">{{ $p.Rank }}</td>
+                <td class="px-2 py-2">
+                    <span title="{{ $p.Name }}"> {{ $p.Name }} </span>
+                    <span class="text-xs text-gray-400 font-normal">
+                        {{ $p.LastVisitedFmt }}
+                    </span>
+                </td>
+                <td class="px-2 py-2">{{ $p.Frags }}</td>
+                <td class="px-2 py-2">{{ $p.Deaths }}</td>
+                <td class="px-2 py-2">{{ printf "%.2f" $p.KD }}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
+
+<div id="paginationWrapper">
+    {{ if gt .Paginator.TotalPages 1 }}
+    <div class="pt-4">{{ template "pagination" . }}</div>
+    {{ end }}
+</div>
+
+<script>
+    let searchTimer = null;
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function updateFilters() {
+        const search =
+            document.getElementById("playerSearch")?.value.trim() || "";
+        const date = document.getElementById("dateFilter")?.value || "";
+
+        const params = new URLSearchParams(window.location.search);
+
+        // search
+        if (search) params.set("search", search);
+        else params.delete("search");
+
+        // date
+        if (date) params.set("date", date);
+        else params.delete("date");
+
+        // всегда сбрасываем страницу при смене фильтров
+        params.set("page", "1");
+
+        window.location.search = params.toString();
+    }
+
+    function searchPlayer() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(updateFilters, 750);
+    }
+
+    // select change
+    document.addEventListener("DOMContentLoaded", () => {
+        const select = document.getElementById("dateFilter");
+        if (select) {
+            select.addEventListener("change", updateFilters);
+        }
+
+        const params = new URLSearchParams(window.location.search);
+
+        const date = params.get("date");
+        if (date && select) {
+            select.value = date;
+        }
+
+        const input = document.getElementById("playerSearch");
+        if (input) {
+            input.focus();
+            const val = input.value;
+            input.setSelectionRange(val.length, val.length);
+        }
+    });
+</script>
+
+<style>
+    .search-input-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 8px 16px;
+        border: none;
+        border-bottom: 1px solid #828282c7;
+        outline: none;
+        background: transparent;
+    }
+
+    .header-hint {
+        font-size: 12px;
+        color: #6b7280;
+        margin-left: 4px;
+    }
+
+    .filters-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .filter-input-wrapper {
+        position: relative;
+        min-width: 150px;
+        overflow: hidden;
+    }
+
+    .filter-input {
+        width: 100%;
+        padding: 8px 16px;
+        border: none;
+        border-bottom: 1px solid #828282c7;
+        outline: none;
+        background: transparent;
+    }
+
+    .filter-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        color: #111827;
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+
+    .filter-line {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 100%;
+        background: #3b82f6;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.25s ease;
+    }
+
+    .filter-input-wrapper.loading .filter-line {
+        transform: scaleX(1);
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            #3b82f6 50%,
+            transparent 100%
+        );
+        animation: filter-loading 1.2s infinite linear;
+    }
+
+    @keyframes filter-loading {
+        from {
+            background-position: -100% 0;
+        }
+        to {
+            background-position: 200% 0;
+        }
+    }
+</style>
+{{ end }}

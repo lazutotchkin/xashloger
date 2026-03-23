@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: rgb(229 231 235 / 1);
+  }
+}

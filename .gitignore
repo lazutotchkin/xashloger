@@ -2,6 +2,9 @@ src/logs
 src/vendor
 src/.env
 src/data
+src/node_modules
+src/tmp
 src/configs/config.yml
 test_progs
 public
+.DS_Store

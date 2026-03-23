@@ -1,7 +1,7 @@
 // @title xashloger
 // @version 26.1.12
 // @description ...
-
+// last version 26.1.12
 package main
 
 import (
@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"os"
 	"xashloger/internal/app"
-	"xashloger/internal/config"
+	"xashloger/internal/infra/config"
 )
 
 var (
-	appVersion = "26.1.12"
+	appVersion = "26.3.23"
 )
 
 func main() {
